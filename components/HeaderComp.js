@@ -7,7 +7,6 @@ const { Header } = Layout;
 
 export default function HeaderComp() {
     const { data } = useSession();
-    const role = data?.user?.user?.role;
 
     const items = [
         {

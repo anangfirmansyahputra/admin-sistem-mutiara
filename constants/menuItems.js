@@ -3,52 +3,52 @@ import { AppstoreAddOutlined, BellOutlined, CalendarOutlined, CameraOutlined, Ca
 const items = [
     {
         label: "Dashboard",
-        key: "dashboard",
+        key: "/secure/dashboard",
         icon: <PieChartOutlined />,
     },
     {
         label: "Pengajar",
-        key: "pengajar",
+        key: "/secure/pengajar",
         icon: <ReconciliationOutlined />,
     },
     {
         label: "Ekstrakurikuler",
-        key: "ekstrakurikuler",
+        key: "/secure/ekstrakurikuler",
         icon: <CalendarOutlined />,
     },
     {
         label: "Siswa",
-        key: "siswa",
+        key: "/secure/siswa",
         icon: <UsergroupAddOutlined />,
     },
     {
         label: "Absensi",
-        key: "absensi",
+        key: "/secure/absensi",
         icon: <CarryOutOutlined />,
     },
     {
         label: "Pengumuman",
-        key: "pengumuman",
+        key: "/secure/pengumuman",
         icon: <BellOutlined />,
     },
     {
         label: "Kelas",
-        key: "kelas",
+        key: "/secure/kelas",
         icon: <AppstoreAddOutlined />,
     },
     {
         label: "Prestasi",
-        key: "prestasi",
+        key: "/secure/prestasi",
         icon: <CrownOutlined />,
     },
     {
         label: "Gallery",
-        key: "gallery",
+        key: "/secure/gallery",
         icon: <CameraOutlined />,
     },
     {
         label: "Pelajaran",
-        key: "matpel",
+        key: "/secure/matpel",
         icon: <FileSearchOutlined />,
     },
 ];

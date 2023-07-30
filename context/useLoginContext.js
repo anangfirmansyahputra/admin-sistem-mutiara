@@ -26,7 +26,7 @@ export default function useLoginContext() {
         })
             .then(({ ok, error }) => {
                 if (ok) {
-                    router.push("/");
+                    router.push("/secure/dashboard");
                 } else {
                     openNotification();
                 }
