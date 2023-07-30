@@ -345,14 +345,14 @@ export default function Pengajar({ siswa, kelas }) {
             key: "nama",
             width: "300px",
             ...getColumnSearchProps("nama"),
-            render: (_, record) => (
-                <Link
-                    href={{
-                        pathname: `siswa/${record?.nis}`,
-                    }}>
-                    {record?.nama}
-                </Link>
-            ),
+            // render: (_, record) => (
+            //     <Link
+            //         href={{
+            //             pathname: `siswa/${record?.nis}`,
+            //         }}>
+            //         {record?.nama}
+            //     </Link>
+            // ),
         },
         {
             title: "NIS",

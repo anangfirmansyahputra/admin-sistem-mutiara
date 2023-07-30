@@ -105,20 +105,20 @@ export default function Dashboard({ pengajar, siswa, ekstrakurikuler, pengumuman
 }
 
 export async function getServerSideProps(ctx) {
-    const session = await getSession(ctx)
+    const session = await getSession(ctx);
     const { data } = await http.get('/pengajar/ekstrakurikuler')
     const { data: siswa } = await http.get('/siswa')
     const { data: pengajar } = await http.get('/admin/pengajar')
     const { data: pengumuman } = await http.get('/admin/pengumuman')
 
-    if (!session) {
-        return {
-            redirect: {
-                destination: "/login",
-            },
-            props: {},
-        };
-    }
+    // if (!session) {
+    //     return {
+    //         redirect: {
+    //             destination: "/login",
+    //         },
+    //         props: {},
+    //     };
+    // }
 
     return {
         props: {

@@ -18,6 +18,18 @@ const galleryService = {
 
         return data;
     },
+
+    async get() {
+        const { data } = await http.get('/gallery')
+
+        return data
+    },
+
+    async deleteOne(id) {
+        const { data } = await http.delete(`/gallery/${id}`)
+
+        return data
+    },
 };
 
 export default galleryService;
