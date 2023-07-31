@@ -1,4 +1,5 @@
 import AbsenModal from "@/components/modals/AbsenModal";
+import NilaiModal from "@/components/modals/NilaiModal";
 import ekstrakurikulerService from "@/services/ekstrakurikuler.service";
 import siswaService from "@/services/siswa.service";
 import { DownOutlined, SearchOutlined } from "@ant-design/icons";
@@ -26,6 +27,7 @@ export default function Absensi({ siswa, ekstrakurikuler }) {
 
     const [dataPendaftar, setDataPendaftar] = useState(null)
     const [open, setOpen] = useState(false)
+    const [openNilai, setOpenNilai] = useState(false)
 
     // siswa.map(item => data.push({
     //     key: item._id,
@@ -57,8 +59,6 @@ export default function Absensi({ siswa, ekstrakurikuler }) {
         pengajar: item.pengajar.nama,
         wajib: item.wajib ? "Wajib" : "Pilihan",
     }))
-
-    console.log(data);
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -179,7 +179,7 @@ export default function Absensi({ siswa, ekstrakurikuler }) {
                 label: (
                     <a onClick={e => {
                         e.preventDefault()
-                        handleEdit(id)
+                        handleNilai(id)
                     }}>
                         Nilai
                     </a>
@@ -292,8 +292,20 @@ export default function Absensi({ siswa, ekstrakurikuler }) {
         }
     }
 
+    const handleNilai = async (id) => {
+        try {
+            const res = await ekstrakurikulerService.find(id)
+            setDataPendaftar(res.data)
+            setOpenNilai(true)
+            console.log(res);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     const handleClose = () => {
         setOpen(false)
+        setOpenNilai(false)
     }
 
     return (
@@ -340,6 +352,7 @@ export default function Absensi({ siswa, ekstrakurikuler }) {
                 </Card>
 
                 <AbsenModal open={open} onCancel={handleClose} data={dataPendaftar} />
+                <NilaiModal open={openNilai} onCancel={handleClose} data={dataPendaftar} />
             </Content>
 
         </>
