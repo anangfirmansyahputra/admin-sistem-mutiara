@@ -44,24 +44,153 @@ export default function AbsenModal(props) {
         pertemuan14: item?.nilai?.ekstrakurikulerPilihan?.kehadiran[13],
     }))
 
-    let absenColumn = []
+    // let absenColumn = []
 
-    for (let i = 1; i <= 14; i++) {
-        absenColumn.push({
-            title: `Pertemuan ${i}`,
-            dataIndex: `pertemuan${i}`,
-            key: `pertemuan${i}`,
-            width: "120px",
+    // for (let i = 1; i <= 14; i++) {
+    //     absenColumn.push({
+    //         title: `${i}`,
+    //         dataIndex: `pertemuan${i}`,
+    //         key: `pertemuan${i}`,
+    //         width: "50px",
+    //         align: "center",
+    //         render: (_, record) => (
+    //             <span>{record[`pertemuan${i}`] ? <CheckOutlined style={{
+    //                 color: "green"
+    //             }} /> : <CloseOutlined style={{
+    //                 color: "red"
+    //             }} />}</span>
+    //         )
+    //     },)
+    // }
+
+    const absenColumn = [
+        {
+            title: "I",
+            dataIndex: `pertemuan1`,
+            key: `pertemuan1`,
             align: "center",
             render: (_, record) => (
-                <span>{record[`pertemuan${i}`] ? <CheckOutlined style={{
-                    color: "green"
-                }} /> : <CloseOutlined style={{
-                    color: "red"
-                }} />}</span>
+                <span className={`${record['pertemuan1'] ? "text-green-500" : "text-red-500"}`}>{record['pertemuan1'] ? "H" : "X"}</span>
             )
-        },)
-    }
+        },
+        {
+            title: "II",
+            dataIndex: `pertemuan2`,
+            key: `pertemuan2`,
+            align: "center",
+            render: (_, record) => (
+                <span className={`${record['pertemuan2'] ? "text-green-500" : "text-red-500"}`}>{record['pertemuan2'] ? "H" : "X"}</span>
+            )
+        },
+        {
+            title: "III",
+            dataIndex: `pertemuan3`,
+            key: `pertemuan3`,
+            align: "center",
+            render: (_, record) => (
+                <span className={`${record['pertemuan3'] ? "text-green-500" : "text-red-500"}`}>{record['pertemuan3'] ? "H" : "X"}</span>
+            )
+        },
+        {
+            title: "IV",
+            dataIndex: `pertemuan4`,
+            key: `pertemuan4`,
+            align: "center",
+            render: (_, record) => (
+                <span className={`${record['pertemuan4'] ? "text-green-500" : "text-red-500"}`}>{record['pertemuan4'] ? "H" : "X"}</span>
+            )
+        },
+        {
+            title: "V",
+            dataIndex: `pertemuan5`,
+            key: `pertemuan5`,
+            align: "center",
+            render: (_, record) => (
+                <span className={`${record['pertemuan5'] ? "text-green-500" : "text-red-500"}`}>{record['pertemuan5'] ? "H" : "X"}</span>
+            )
+        },
+        {
+            title: "VI",
+            dataIndex: `pertemuan6`,
+            key: `pertemuan6`,
+            align: "center",
+            render: (_, record) => (
+                <span className={`${record['pertemuan6'] ? "text-green-500" : "text-red-500"}`}>{record['pertemuan6'] ? "H" : "X"}</span>
+            )
+        },
+        {
+            title: "VII",
+            dataIndex: `pertemuan7`,
+            key: `pertemuan7`,
+            align: "center",
+            render: (_, record) => (
+                <span className={`${record['pertemuan7'] ? "text-green-500" : "text-red-500"}`}>{record['pertemuan7'] ? "H" : "X"}</span>
+            )
+        },
+        {
+            title: "VIII",
+            dataIndex: `pertemuan8`,
+            key: `pertemuan8`,
+            align: "center",
+            render: (_, record) => (
+                <span className={`${record['pertemuan8'] ? "text-green-500" : "text-red-500"}`}>{record['pertemuan8'] ? "H" : "X"}</span>
+            )
+        },
+        {
+            title: "IX",
+            dataIndex: `pertemuan9`,
+            key: `pertemuan9`,
+            align: "center",
+            render: (_, record) => (
+                <span className={`${record['pertemuan9'] ? "text-green-500" : "text-red-500"}`}>{record['pertemuan9'] ? "H" : "X"}</span>
+            )
+        },
+        {
+            title: "X",
+            dataIndex: `pertemuan10`,
+            key: `pertemuan10`,
+            align: "center",
+            render: (_, record) => (
+                <span className={`${record['pertemuan10'] ? "text-green-500" : "text-red-500"}`}>{record['pertemuan10'] ? "H" : "X"}</span>
+            )
+        },
+        {
+            title: "XI",
+            dataIndex: `pertemuan11`,
+            key: `pertemuan11`,
+            align: "center",
+            render: (_, record) => (
+                <span className={`${record['pertemuan11'] ? "text-green-500" : "text-red-500"}`}>{record['pertemuan11'] ? "H" : "X"}</span>
+            )
+        },
+        {
+            title: "XII",
+            dataIndex: `pertemuan12`,
+            key: `pertemuan12`,
+            align: "center",
+            render: (_, record) => (
+                <span className={`${record['pertemuan12'] ? "text-green-500" : "text-red-500"}`}>{record['pertemuan12'] ? "H" : "X"}</span>
+            )
+        },
+        {
+            title: "XIII",
+            dataIndex: `pertemuan13`,
+            key: `pertemuan13`,
+            align: "center",
+            render: (_, record) => (
+                <span className={`${record['pertemuan13'] ? "text-green-500" : "text-red-500"}`}>{record['pertemuan13'] ? "H" : "X"}</span>
+            )
+        },
+        {
+            title: "XIV",
+            dataIndex: `pertemuan14`,
+            key: `pertemuan14`,
+            align: "center",
+            render: (_, record) => (
+                <span className={`${record['pertemuan14'] ? "text-green-500" : "text-red-500"}`}>{record['pertemuan14'] ? "H" : "X"}</span>
+            )
+        },
+    ]
 
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
@@ -156,7 +285,7 @@ export default function AbsenModal(props) {
             title: "Nama",
             dataIndex: "name",
             key: "name",
-            width: "200px",
+            width: "150px",
             ...getColumnSearchProps("name"),
             fixed: "left",
             // render: (_, record) => (
@@ -173,12 +302,14 @@ export default function AbsenModal(props) {
             dataIndex: "nis",
             key: "nis",
             ...getColumnSearchProps("nis"),
+            width: 150
         },
         {
             title: "Kelas",
             dataIndex: "kelas",
             key: "kelas",
             ...getColumnSearchProps("kelas"),
+            width: 50
         },
         ...absenColumn
     ];
@@ -289,7 +420,7 @@ export default function AbsenModal(props) {
                         </Row>
                     </Form>
                     <Table size="small" dataSource={data} columns={columns} scroll={{
-                        x: 2300
+                        x: 1500
                     }} />
                 </Card>
             </Modal>

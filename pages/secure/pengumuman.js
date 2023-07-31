@@ -167,7 +167,7 @@ export default function Page({ pengumuman }) {
             // fixed: "left",
         },
         {
-            title: "Untuk",
+            title: "Ditujukan Kepada",
             dataIndex: "for",
             key: "for",
             // width: "200px",
@@ -185,7 +185,7 @@ export default function Page({ pengumuman }) {
         //     width: "200px",
         // },
         {
-            title: "Waktu berakhir",
+            title: "Waktu",
             dataIndex: "timeEnd",
             key: "timeEnd",
             ...getColumnSearchProps("timeEnd"),
@@ -396,7 +396,7 @@ export default function Page({ pengumuman }) {
                                 </Form.Item>
                             </Col>
                             <Col span={12}>
-                                <Form.Item label="Untuk" name="for" required rules={[{ message: "Mohon pilih untuk", required: true }]}>
+                                <Form.Item label="Ditujukan Kepada" name="for" required rules={[{ message: "Mohon pilih untuk", required: true }]}>
                                     <Select options={[
                                         {
                                             label: "Siswa",
@@ -412,7 +412,7 @@ export default function Page({ pengumuman }) {
                                         },
                                     ]} placeholder="Untuk" />
                                 </Form.Item>
-                                <Form.Item label="Waktu Berakhir" name="timeEnd" required rules={[{ message: "Mohon isi waktu berakhir", required: true }]}>
+                                <Form.Item label="Waktu" name="timeEnd" required rules={[{ message: "Mohon isi waktu berakhir", required: true }]}>
                                     <DatePicker style={{ width: "100%" }} />
                                 </Form.Item>
                             </Col>
