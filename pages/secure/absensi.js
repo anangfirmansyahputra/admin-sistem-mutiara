@@ -1,6 +1,8 @@
+import AbsenModal from "@/components/modals/AbsenModal";
+import ekstrakurikulerService from "@/services/ekstrakurikuler.service";
 import siswaService from "@/services/siswa.service";
 import { DownOutlined, SearchOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Card, Dropdown, Input, Layout, Space, Table, Typography } from "antd";
+import { Breadcrumb, Button, Card, Dropdown, Input, Layout, Space, Table, Tag, Typography } from "antd";
 import dayjs from "dayjs";
 import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
@@ -12,7 +14,7 @@ import Highlighter from "react-highlight-words";
 Absensi.layout = "L1";
 const { Content } = Layout
 
-export default function Absensi({ siswa }) {
+export default function Absensi({ siswa, ekstrakurikuler }) {
     // State
     const [searchText, setSearchText] = useState("");
     const [searchedColumn, setSearchedColumn] = useState("");
@@ -22,15 +24,16 @@ export default function Absensi({ siswa }) {
     const { data: session } = useSession();
     const token = session?.user?.user?.accessToken;
 
-    console.log(siswa);
+    const [dataPendaftar, setDataPendaftar] = useState(null)
+    const [open, setOpen] = useState(false)
 
-    siswa.map(item => data.push({
-        key: item._id,
-        name: item.name,
-        kelas: item?.kelas ? `${item.kelas.kelas} ${item.kelas.name}` : "-",
-        wajib: item?.nilai?.ekstrakurikulerWajib?.ekstrakurikuler ?? "Belum memilih",
-        pilihan: item?.nilai?.ekstrakurikulerPilihan?.ekstrakurikuler ?? "Belum memilih",
-    }))
+    // siswa.map(item => data.push({
+    //     key: item._id,
+    //     name: item.name,
+    //     kelas: item?.kelas ? `${item.kelas.kelas} ${item.kelas.name}` : "-",
+    //     wajib: item?.nilai?.ekstrakurikulerWajib?.ekstrakurikuler ?? "Belum memilih",
+    //     pilihan: item?.nilai?.ekstrakurikulerPilihan?.ekstrakurikuler ?? "Belum memilih",
+    // }))
 
     // ekstrakurikuler?.data.map(
     //     (item) =>
@@ -46,6 +49,16 @@ export default function Absensi({ siswa }) {
     //             wajib: item?.wajib === true ? "Wajib" : "Pilihan",
     //         })
     // );
+
+    ekstrakurikuler.filter(item => item.approve === true).map(item => data.push({
+        key: item._id,
+        name: item.name,
+        pendaftar: item.pendaftar.length,
+        pengajar: item.pengajar.nama,
+        wajib: item.wajib ? "Wajib" : "Pilihan",
+    }))
+
+    console.log(data);
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -155,6 +168,7 @@ export default function Absensi({ siswa }) {
                 label: (
                     <a onClick={e => {
                         e.preventDefault()
+                        handleAbsen(id)
                     }}>
                         Absensi
                     </a>
@@ -193,19 +207,24 @@ export default function Absensi({ siswa }) {
             // ),
         },
         {
-            title: "Kelas",
-            dataIndex: 'kelas',
-            key: "kelas"
+            title: "Pengajar",
+            dataIndex: 'pengajar',
+            key: "pengajar"
         },
         {
-            title: "Wajib",
+            title: "Pendaftar",
+            dataIndex: "pendaftar",
+            key: "pendaftar"
+        },
+        {
+            title: "Tipe",
             dataIndex: "wajib",
-            key: "wajib"
-        },
-        {
-            title: "Pilihan",
-            dataIndex: "pilihan",
-            key: "pilihan"
+            key: "wajib",
+            render: (_, record) => (
+                <Tag color={record.wajib === "Wajib" ? "yellow" : "green"}>
+                    {record.wajib}
+                </Tag>
+            )
         },
         {
             title: "Aksi",
@@ -262,6 +281,20 @@ export default function Absensi({ siswa }) {
         // },
     ];
 
+    const handleAbsen = async (id) => {
+        try {
+            const res = await ekstrakurikulerService.find(id)
+            setDataPendaftar(res.data)
+            setOpen(true)
+            console.log(res);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    const handleClose = () => {
+        setOpen(false)
+    }
 
     return (
         <>
@@ -306,6 +339,7 @@ export default function Absensi({ siswa }) {
                     />
                 </Card>
 
+                <AbsenModal open={open} onCancel={handleClose} data={dataPendaftar} />
             </Content>
 
         </>
@@ -315,6 +349,7 @@ export default function Absensi({ siswa }) {
 export async function getServerSideProps(ctx) {
     const session = await getSession(ctx);
     const { data: siswa } = await siswaService.get()
+    const { data: ekstrakurikuler } = await ekstrakurikulerService.get()
 
     if (!session) {
         return {
@@ -327,7 +362,7 @@ export async function getServerSideProps(ctx) {
 
     return {
         props: {
-            // ekstrakurikuler: data,
+            ekstrakurikuler: ekstrakurikuler,
             siswa: siswa
         },
     };

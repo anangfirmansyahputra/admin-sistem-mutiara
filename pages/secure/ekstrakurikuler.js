@@ -1,3 +1,4 @@
+import PendaftarModal from '@/components/modals/PendaftarModal';
 import http from '@/plugin/https';
 import ekstrakurikulerService from "@/services/ekstrakurikuler.service";
 import siswaService from '@/services/siswa.service';
@@ -30,6 +31,9 @@ export default function Ekstrakurikuler({ ekstrakurikuler, pengajar }) {
     const [open, setOpen] = useState(false)
     const [isEdit, setIsEdit] = useState(false)
     const [id, setId] = useState(null)
+
+    const [pendaftarModal, setPendaftarModal] = useState(false)
+    const [dataPendaftar, setDataPendaftar] = useState(null)
 
     const handleClose = () => {
         form.resetFields()
@@ -212,12 +216,24 @@ export default function Ekstrakurikuler({ ekstrakurikuler, pengajar }) {
         )
     }
 
+    const handlePendaftar = async (id) => {
+        try {
+            const res = await ekstrakurikulerService.find(id)
+            setPendaftarModal(true)
+            setDataPendaftar(res.data)
+            console.log(res.data);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     const items = (id) => {
         return [
             {
                 label: (
                     <a onClick={e => {
                         e.preventDefault()
+                        handlePendaftar(id)
                     }}>
                         Pendaftar
                     </a>
@@ -258,14 +274,14 @@ export default function Ekstrakurikuler({ ekstrakurikuler, pengajar }) {
             width: "fit",
             ...getColumnSearchProps("name"),
             // fixed: "left",
-            render: (_, record) => (
-                <Link
-                    href={{
-                        pathname: `/ekstrakurikuler/${record?.key}`,
-                    }}>
-                    {record?.name}
-                </Link>
-            ),
+            // render: (_, record) => (
+            //     <Link
+            //         href={{
+            //             pathname: `/ekstrakurikuler/${record?.key}`,
+            //         }}>
+            //         {record?.name}
+            //     </Link>
+            // ),
         },
         {
             title: "Pendaftar",
@@ -273,15 +289,15 @@ export default function Ekstrakurikuler({ ekstrakurikuler, pengajar }) {
             key: "pendaftar",
             // width: "10px",
             ...getColumnSearchProps("pendaftar"),
-            render: (_, record) => {
-                return (
-                    <Button
-                        type="link"
-                        onClick={() => router.push(`/ekstrakurikuler/${record?.key}/pendaftar`)}>
-                        {record?.pendaftar}
-                    </Button>
-                );
-            },
+            // render: (_, record) => {
+            //     return (
+            //         <Button
+            //             type="link"
+            //             onClick={() => router.push(`/ekstrakurikuler/${record?.key}/pendaftar`)}>
+            //             {record?.pendaftar}
+            //         </Button>
+            //     );
+            // },
         },
         {
             title: "Lokasi",
@@ -416,6 +432,11 @@ export default function Ekstrakurikuler({ ekstrakurikuler, pengajar }) {
             } else if (result.isDenied) {
             }
         })
+    }
+
+    const handleClosePendaftarModal = () => {
+        setPendaftarModal(false)
+        setDataPendaftar(null)
     }
 
     return (
@@ -646,6 +667,8 @@ export default function Ekstrakurikuler({ ekstrakurikuler, pengajar }) {
                     </Form>
                 </Card>
             </Modal>
+
+            <PendaftarModal open={pendaftarModal} onCancel={handleClosePendaftarModal} data={dataPendaftar} />
         </>
     );
 }
