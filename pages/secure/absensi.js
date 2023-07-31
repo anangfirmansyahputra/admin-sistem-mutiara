@@ -323,7 +323,7 @@ export default function Absensi({ siswa, ekstrakurikuler }) {
                     <Breadcrumb style={{ margin: "0 0 16px" }} items={[
                         {
                             title: <Link href={{
-                                pathname: "/dashboard"
+                                pathname: "/secure/dashboard"
                             }}>Dashboard</Link>
                         },
                         {

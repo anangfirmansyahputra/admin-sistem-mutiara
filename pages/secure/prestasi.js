@@ -1,6 +1,6 @@
 import http from '@/plugin/https';
 import prestasiService from "@/services/prestasi.service";
-import { DeleteOutlined, DownloadOutlined, EditOutlined, SearchOutlined } from "@ant-design/icons";
+import { DeleteOutlined, DownloadOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Card, Input, Popconfirm, Space, Typography, message } from "antd";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
@@ -157,7 +157,7 @@ export default function Prestasi({ kelas, prestasi }) {
                     <Breadcrumb
                         items={[
                             {
-                                title: <Link href="/">Dashboard</Link>,
+                                title: <Link href="/secure/dashboard">Dashboard</Link>,
                             },
                             {
                                 title: "Prestasi",
@@ -169,13 +169,13 @@ export default function Prestasi({ kelas, prestasi }) {
                             pathname: "/prestasi/tambah",
                         }}>
                         <Button
-                            type="default"
-                            icon={<DeleteOutlined />}>
+                            type="primary"
+                            icon={<PlusOutlined />}>
                             Tambah
                         </Button>
                     </Link>
                 </div>
-                <Input style={{ width: 300, marginBottom: 20 }} />
+                {/* <Input style={{ width: 300, marginBottom: 20 }} /> */}
                 <div className="grid grid-cols-4 gap-5">
                     {prestasi?.data?.map((item) => (
                         <Card

@@ -244,7 +244,7 @@ export default function MatpelPage({ matpel }) {
                     <Breadcrumb items={[
                         {
                             title: <Link href={{
-                                pathname: "/dashboard"
+                                pathname: "/secure/dashboard"
                             }}>Dashboard</Link>
                         },
                         {

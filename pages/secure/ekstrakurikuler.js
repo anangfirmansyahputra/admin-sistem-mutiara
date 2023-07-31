@@ -449,7 +449,7 @@ export default function Ekstrakurikuler({ ekstrakurikuler, pengajar }) {
                 <Breadcrumb
                     items={[
                         {
-                            title: <Link href="/">Dashboard</Link>,
+                            title: <Link href="/secure/dashboard">Dashboard</Link>,
                         },
                         {
                             title: "Ekstrakurikuler",

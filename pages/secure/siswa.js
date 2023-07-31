@@ -508,7 +508,7 @@ export default function Pengajar({ siswa, kelas }) {
                     <Breadcrumb
                         items={[
                             {
-                                title: <Link href="/">Dashboard</Link>,
+                                title: <Link href="/secure/dashboard">Dashboard</Link>,
                             },
                             {
                                 title: "Siswa",

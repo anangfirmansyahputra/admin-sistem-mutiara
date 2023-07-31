@@ -384,7 +384,7 @@ export default function Gallery({ gallery, ekstrakurikuler }) {
                     <Breadcrumb
                         items={[
                             {
-                                title: <Link href="/">Dashboard</Link>,
+                                title: <Link href="/secure/dashboard">Dashboard</Link>,
                             },
                             {
                                 title: "Gallery",
