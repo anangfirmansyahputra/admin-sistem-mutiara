@@ -1,15 +1,18 @@
 import CardDashboard from "@/components/CardDashboard";
-import { BellAlertIcon, ClipboardDocumentCheckIcon, UserGroupIcon, UsersIcon } from "@heroicons/react/24/outline";
+import { BellAlertIcon, BriefcaseIcon, ClipboardDocumentCheckIcon, CubeIcon, FireIcon, UserGroupIcon, UsersIcon } from "@heroicons/react/24/outline";
 import { Alert, Button } from "antd";
 import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import http from '@/plugin/https'
+import kelasService from "@/services/kelas.service";
+import matpelService from "@/services/matpel.service";
+import galleryService from "@/services/gallery.service";
 
 Dashboard.layout = "L1";
 
-export default function Dashboard({ pengajar, siswa, ekstrakurikuler, pengumuman }) {
+export default function Dashboard({ gallery, matpel, pengajar, siswa, ekstrakurikuler, pengumuman, kelas }) {
     const [pending, setPending] = useState(ekstrakurikuler?.data?.filter((item) => item?.approve === false));
     const router = useRouter();
     const { data: session } = useSession()
@@ -23,7 +26,7 @@ export default function Dashboard({ pengajar, siswa, ekstrakurikuler, pengumuman
                     <UsersIcon className="h-5 w-5 text-red-500" />
                 </div>
             ),
-            link: "/pengajar",
+            link: "/secure/pengajar",
             linkText: "Lihat semua pengajar",
             bg: "bg-red-100",
         },
@@ -35,7 +38,7 @@ export default function Dashboard({ pengajar, siswa, ekstrakurikuler, pengumuman
                     <UserGroupIcon className="h-5 w-5 text-green-500" />
                 </div>
             ),
-            link: "/siswa",
+            link: "/secure/siswa",
             linkText: "Lihat semua siswa",
         },
         {
@@ -46,7 +49,7 @@ export default function Dashboard({ pengajar, siswa, ekstrakurikuler, pengumuman
                     <ClipboardDocumentCheckIcon className="h-5 w-5 text-blue-500" />
                 </div>
             ),
-            link: "/ekstrakurikuler",
+            link: "/secure/ekstrakurikuler",
             linkText: "Lihat semua ekstrakurikuler",
         },
         {
@@ -57,8 +60,52 @@ export default function Dashboard({ pengajar, siswa, ekstrakurikuler, pengumuman
                     <BellAlertIcon className="h-5 w-5 text-yellow-500" />
                 </div>
             ),
-            link: "/pengumuman",
+            link: "/secure/pengumuman",
             linkText: "Lihat semua pengumuman",
+        },
+        {
+            title: "Kelas",
+            text: kelas?.length,
+            icon: (
+                <div className="rounded bg-purple-200 p-1">
+                    <BriefcaseIcon className="h-5 w-5 text-purple-500" />
+                </div>
+            ),
+            link: "/secure/kelas",
+            linkText: "Lihat semua kelas",
+        },
+        {
+            title: "Mata Pelajaran",
+            text: matpel?.length,
+            icon: (
+                <div className="rounded bg-slate-200 p-1">
+                    <CubeIcon className="h-5 w-5 text-slate-500" />
+                </div>
+            ),
+            link: "/secure/matpel",
+            linkText: "Lihat semua mata pelajaran",
+        },
+        {
+            title: "Prestasi",
+            text: matpel?.length,
+            icon: (
+                <div className="rounded bg-orange-200 p-1">
+                    <FireIcon className="h-5 w-5 text-orange-500" />
+                </div>
+            ),
+            link: "/secure/prestasi",
+            linkText: "Lihat semua prestasi",
+        },
+        {
+            title: "Gallery",
+            text: gallery?.length,
+            icon: (
+                <div className="rounded bg-teal-200 p-1">
+                    <FireIcon className="h-5 w-5 text-teal-500" />
+                </div>
+            ),
+            link: "/secure/gallery",
+            linkText: "Lihat semua gallery",
         },
     ];
 
@@ -110,6 +157,9 @@ export async function getServerSideProps(ctx) {
     const { data: siswa } = await http.get('/siswa')
     const { data: pengajar } = await http.get('/admin/pengajar')
     const { data: pengumuman } = await http.get('/admin/pengumuman')
+    const { data: kelas } = await kelasService.get()
+    const { data: matpel } = await matpelService.get()
+    const { data: gallery } = await galleryService.get()
 
     // if (!session) {
     //     return {
@@ -126,6 +176,9 @@ export async function getServerSideProps(ctx) {
             siswa: siswa,
             pengajar: pengajar,
             pengumuman: pengumuman,
+            kelas: kelas,
+            matpel: matpel,
+            gallery
         },
     };
 }

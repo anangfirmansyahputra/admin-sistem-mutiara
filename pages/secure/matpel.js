@@ -269,10 +269,10 @@ export default function MatpelPage({ matpel }) {
                     open={modalOpen}
                     onCancel={() => {
                         setModalOpen(false)
-                        // setEdit({
-                        //     id: null,
-                        //     isEdit: false
-                        // })
+                        setEdit({
+                            id: null,
+                            isEdit: false
+                        })
                         form.resetFields()
                     }}
                     footer={[

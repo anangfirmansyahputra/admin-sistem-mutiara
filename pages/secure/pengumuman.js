@@ -1,14 +1,15 @@
-import AddDelete from "@/components/AddDelete";
-import { SearchOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Card, Popconfirm, Space, Table, Typography } from "antd";
+import http from '@/plugin/https';
+import pengumumanService from '@/services/pengumuman.service';
+import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
+import { Breadcrumb, Button, Card, Col, Form, Modal, Popconfirm, Row, Space, Table, Typography, Input, Select, DatePicker } from "antd";
+import dayjs from 'dayjs';
 import { useSession } from "next-auth/react";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Input } from "postcss";
 import { useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
-import http from '@/plugin/https'
-import Head from "next/head";
+import Swal from 'sweetalert2';
 
 Page.layout = "L1";
 
@@ -20,13 +21,20 @@ export default function Page({ pengumuman }) {
     const data = [];
     const { data: session } = useSession();
     const token = session?.user?.user?.accessToken;
+    const [form] = Form.useForm()
+
+    const [open, setOpen] = useState(false)
+    const [isEdit, setIsEdit] = useState(false)
+    const [id, setId] = useState(null)
+
+
     pengumuman?.data.map((item) =>
         data.push({
             key: item._id,
             title: item?.title,
             content: item?.content,
             for: item?.for,
-            timeEnd: item?.timeEnd,
+            timeEnd: dayjs(item?.timeEnd).format('YYYY-MM-DD'),
             timeStart: item?.timeStart,
         })
     );
@@ -154,58 +162,77 @@ export default function Page({ pengumuman }) {
             title: "Title",
             dataIndex: "title",
             key: "title",
-            width: "300px",
+            // width: "300px",
             ...getColumnSearchProps("title"),
-            fixed: "left",
+            // fixed: "left",
         },
         {
             title: "Untuk",
             dataIndex: "for",
             key: "for",
-            width: "200px",
+            // width: "200px",
             ...getColumnSearchProps("for"),
+            render: (_, record) => (
+                <span className='capitalize'>{record.for}</span>
+            )
         },
+        // {
+        //     title: "Time Start",
+        //     dataIndex: "timeStart",
+        //     key: "timeStart",
+        //     ...getColumnSearchProps("timeStart"),
+        //     sortDirections: ["descend", "ascend"],
+        //     width: "200px",
+        // },
         {
-            title: "Time Start",
-            dataIndex: "timeStart",
-            key: "timeStart",
-            ...getColumnSearchProps("timeStart"),
-            sortDirections: ["descend", "ascend"],
-            width: "200px",
-        },
-        {
-            title: "Time End",
+            title: "Waktu berakhir",
             dataIndex: "timeEnd",
             key: "timeEnd",
             ...getColumnSearchProps("timeEnd"),
-            width: "200px",
+            // width: "200px",
         },
-
+        // {
+        //     title: "Edit",
+        //     dataIndex: "edit",
+        //     fixed: "right",
+        //     width: "100px",
+        //     render: (_, record) => (
+        //         <Space>
+        //             <Popconfirm
+        //                 title="Yakin ingin menghapus?"
+        //                 onConfirm={() => confirm(record)}
+        //                 onCancel={cancel}>
+        //                 <Button
+        //                     type="primary"
+        //                     danger>
+        //                     Delete
+        //                 </Button>
+        //             </Popconfirm>
+        //             <Button
+        //                 type="primary"
+        //                 onClick={() => router.push("/pengumuman/tambah")}>
+        //                 Edit
+        //             </Button>
+        //         </Space>
+        //     ),
+        // },
         {
-            title: "Edit",
-            dataIndex: "edit",
+            title: "Aksi",
+            width: 150,
             fixed: "right",
-            width: "200px",
             render: (_, record) => (
-                <Space>
-                    <Popconfirm
-                        title="Yakin ingin menghapus?"
-                        onConfirm={() => confirm(record)}
-                        onCancel={cancel}>
-                        <Button
-                            type="primary"
-                            danger>
-                            Delete
-                        </Button>
-                    </Popconfirm>
-                    <Button
-                        type="primary"
-                        onClick={() => router.push("/pengumuman/tambah")}>
+                <>
+                    <Button type='link' onClick={() => {
+                        handleEdit(record.key)
+                    }}>
                         Edit
                     </Button>
-                </Space>
-            ),
-        },
+                    <Button type='link' danger onClick={() => handleDelete(record.key)}>
+                        Hapus
+                    </Button>
+                </>
+            )
+        }
     ];
 
     const rowSelection = {
@@ -221,6 +248,102 @@ export default function Page({ pengumuman }) {
     };
 
     const [selectedRow, setSelectedRow] = useState([]);
+
+    const handleSubmit = (values) => {
+        Swal.fire({
+            icon: "question",
+            title: "Apa anda yakin?",
+            text: isEdit ? "Data akan dirubah" : "Data akan disimpan",
+            showDenyButton: true,
+            confirmButtonText: 'Yakin',
+            denyButtonText: `Tidak`,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    if (isEdit) {
+                        const res = await pengumumanService.update(id, values)
+                    } else {
+                        const res = await pengumumanService.create(values)
+                    }
+                    Swal.fire({
+                        icon: 'success',
+                        title: "Sukses",
+                        text: isEdit ? "Data berhasil diupdate" : "Data berhasil disimpan"
+                    })
+                    router.push(router.asPath)
+                    setOpen(false)
+                    form.resetFields()
+                    setId(null)
+                    setIsEdit(false)
+                } catch {
+                    Swal.fire({
+                        icon: 'error',
+                        title: "Gagal",
+                        text: "Data gagal disimpan, coba ganti data dan coba kembali!"
+                    })
+                }
+            } else if (result.isDenied) {
+            }
+        })
+    }
+
+    const handleClose = () => {
+        setOpen(false)
+        form.resetFields()
+        setIsEdit(false)
+        setId(null)
+    }
+
+    const handleEdit = async (id) => {
+        setOpen(true)
+        setId(id)
+        setIsEdit(true)
+
+        try {
+            const res = await pengumumanService.find(id)
+            form.setFieldsValue({ ...res.data, timeEnd: dayjs(res.data.timeEnd) })
+        } catch {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Edit sedang bermasalah, silahkan mencoba kembali"
+            })
+        }
+    }
+
+    const handleDelete = (id) => {
+        Swal.fire({
+            icon: "question",
+            title: "Apa anda yakin?",
+            text: "Data akan dihapus secara permanen",
+            showDenyButton: true,
+            confirmButtonText: 'Yakin',
+            denyButtonText: `Tidak`,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const res = await pengumumanService.delete(id)
+                    Swal.fire({
+                        icon: 'success',
+                        title: "Sukses",
+                        text: "Data berhasil dihapus"
+                    })
+                    router.push(router.asPath)
+                    setOpen(false)
+                    form.resetFields()
+                    setId(null)
+                    setIsEdit(false)
+                } catch {
+                    Swal.fire({
+                        icon: 'error',
+                        title: "Gagal",
+                        text: "Data gagal dihapus, mohon coba kembali!"
+                    })
+                }
+            } else if (result.isDenied) {
+            }
+        })
+    }
 
     return (
         <>
@@ -239,6 +362,7 @@ export default function Page({ pengumuman }) {
                         },
                     ]}
                 />
+                <Button onClick={() => setOpen(true)} type="primary" icon={<PlusOutlined />}>Pengumuman</Button>
             </div>
             <Card title="Data Pengumuman">
                 <Table
@@ -254,11 +378,48 @@ export default function Page({ pengumuman }) {
                     // }}
                     columns={columns}
                     dataSource={data}
-                    scroll={{
-                        x: 1200,
-                    }}
+                // scroll={{
+                //     x: 1200,
+                // }}
                 />
             </Card>
+            <Modal open={open} title="Form Pengumuman" width={1200} onCancel={handleClose} onOk={() => form.submit()}>
+                <Card className="m-[20px]">
+                    <Form labelWrap labelCol={{ span: 6 }} colon={false} form={form} onFinish={handleSubmit}>
+                        <Row gutter={16}>
+                            <Col span={12}>
+                                <Form.Item label="Judul" name="title" required rules={[{ message: "Mohon isi judul", required: true }]}>
+                                    <Input placeholder='Judul' />
+                                </Form.Item>
+                                <Form.Item label="Deskripsi" name="content" required rules={[{ message: "Mohon isi deskripsi", required: true }]}>
+                                    <Input.TextArea placeholder='Deskripsi' />
+                                </Form.Item>
+                            </Col>
+                            <Col span={12}>
+                                <Form.Item label="Untuk" name="for" required rules={[{ message: "Mohon pilih untuk", required: true }]}>
+                                    <Select options={[
+                                        {
+                                            label: "Siswa",
+                                            value: "siswa"
+                                        },
+                                        {
+                                            label: "Pengajar",
+                                            value: "pengajar"
+                                        },
+                                        {
+                                            label: "Semua",
+                                            value: "semua"
+                                        },
+                                    ]} placeholder="Untuk" />
+                                </Form.Item>
+                                <Form.Item label="Waktu Berakhir" name="timeEnd" required rules={[{ message: "Mohon isi waktu berakhir", required: true }]}>
+                                    <DatePicker style={{ width: "100%" }} />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                    </Form>
+                </Card>
+            </Modal>
         </>
     );
 }
