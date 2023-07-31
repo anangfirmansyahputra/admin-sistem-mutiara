@@ -11,9 +11,11 @@ export default function AbsenModal(props) {
     const router = useRouter()
 
     const [open, setOpen] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     const handleClose = () => {
         setOpen(false)
+        setRowKeys([])
     }
 
     form.setFieldsValue({ name: props?.data?.name })
@@ -234,9 +236,10 @@ export default function AbsenModal(props) {
 
                 // console.log(payload);
 
+                setLoading(true)
+
                 try {
                     const res = await absenService.absen(payload)
-                    console.log(res);
 
                     Swal.fire({
                         icon: 'success',
@@ -245,6 +248,7 @@ export default function AbsenModal(props) {
                     })
                     router.push(router.asPath)
                     setOpen(false)
+                    props.onCancel()
                     form.resetFields()
                 } catch (err) {
                     console.log(err);
@@ -254,6 +258,10 @@ export default function AbsenModal(props) {
                         title: "Gagal",
                         text: messageErr ?? "Data gagal disimpan, coba ganti data dan coba kembali!"
                     })
+                } finally {
+                    setRowKeys([])
+                    formAbsen.resetFields()
+                    setLoading(false)
                 }
             } else if (result.isDenied) {
             }
@@ -271,11 +279,13 @@ export default function AbsenModal(props) {
                                     <Input disabled />
                                 </Form.Item>
                             </Col>
-                            <Col span={6}>
-                                <Form.Item name="name" label=" " >
-                                    <Button type="primary" onClick={() => setOpen(true)}>Beri Nilai</Button>
-                                </Form.Item>
-                            </Col>
+                            {props?.data?.pendaftar?.length > 0 && (
+                                <Col span={6}>
+                                    <Form.Item name="name" label=" " >
+                                        <Button type="primary" onClick={() => setOpen(true)}>Beri Nilai</Button>
+                                    </Form.Item>
+                                </Col>
+                            )}
                         </Row>
                     </Form>
                     <Table size="small" dataSource={data} columns={columns} scroll={{
@@ -284,7 +294,7 @@ export default function AbsenModal(props) {
                 </Card>
             </Modal>
             <Modal title="Form Nilai Absen" open={open} onOk={() => formAbsen.submit()} onCancel={handleClose} width={1200}>
-                <Card className="m-[20px]">
+                <Card className="m-[20px]" loading={loading}>
                     <Form form={formAbsen} onFinish={handleSubmit}>
                         <Col span={6}>
                             <Form.Item label="Pertemuan" colon={false} name="pertemuan">
