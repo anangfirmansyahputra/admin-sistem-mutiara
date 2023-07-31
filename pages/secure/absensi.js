@@ -295,9 +295,9 @@ export default function Absensi({ siswa, ekstrakurikuler }) {
     const handleNilai = async (id) => {
         try {
             const res = await ekstrakurikulerService.find(id)
+
             setDataPendaftar(res.data)
             setOpenNilai(true)
-            console.log(res);
         } catch (err) {
             console.log(err);
         }
@@ -352,7 +352,7 @@ export default function Absensi({ siswa, ekstrakurikuler }) {
                 </Card>
 
                 <AbsenModal open={open} onCancel={handleClose} data={dataPendaftar} />
-                <NilaiModal open={openNilai} onCancel={handleClose} data={dataPendaftar} />
+                <NilaiModal open={openNilai} onCancel={handleClose} data={dataPendaftar} setDataPendaftar={setDataPendaftar} />
             </Content>
 
         </>

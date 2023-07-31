@@ -1,3 +1,4 @@
+import ekstrakurikulerService from "@/services/ekstrakurikuler.service";
 import nilaiService from "@/services/nilai.service";
 import { Button, Form, Input, InputNumber, Modal, Table, Card } from "antd";
 import { useRouter } from "next/router";
@@ -88,7 +89,9 @@ export default function NilaiModal(props) {
                     setOpen(false)
                     form.resetFields()
                     setSelecSiswa(null)
-                    props.onCancel()
+                    // props.onCancel()
+                    const resData = await ekstrakurikulerService.find(props?.data?._id)
+                    props?.setDataPendaftar(resData.data)
                 } catch (err) {
                     console.log(err);
                     const messageErr = JSON.parse(err?.request?.response)?.message
@@ -106,7 +109,7 @@ export default function NilaiModal(props) {
 
     return (
         <>
-            <Modal open={props.open} onCancel={props.onCancel} width={1200} title="Form Nilai">
+            <Modal open={props.open} onCancel={props.onCancel} footer={<Button onClick={props.onCancel}>Tutup</Button>} width={1200} title="Form Nilai">
                 <Card className="m-[20px]">
                     <Table columns={columns} dataSource={data} />
                 </Card>

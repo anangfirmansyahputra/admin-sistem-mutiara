@@ -270,7 +270,7 @@ export default function AbsenModal(props) {
 
     return (
         <>
-            <Modal width={1200} onCancel={props.onCancel} open={props.open} title="Absensi">
+            <Modal width={1200} onCancel={props.onCancel} onOk={<Button onClick={props.onCancel}>Tutup</Button>} open={props.open} title="Absensi">
                 <Card className="m-[20px]">
                     <Form form={form} colon={false} layout="vertical">
                         <Row gutter={16}>
