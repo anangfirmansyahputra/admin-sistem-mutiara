@@ -12,10 +12,13 @@ export default function AbsenModal(props) {
 
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [pertemuan, setPertemuan] = useState(0)
 
     const handleClose = () => {
+        setPertemuan(0)
         setOpen(false)
         setRowKeys([])
+        formAbsen.setFieldsValue({ pertemuan: 0 })
     }
 
     form.setFieldsValue({ name: props?.data?.name })
@@ -28,20 +31,21 @@ export default function AbsenModal(props) {
         name: item?.name,
         nis: item?.nis,
         kelas: `${item?.kelas?.kelas} ${item?.kelas?.name}`,
-        pertemuan1: item?.nilai?.ekstrakurikulerPilihan?.kehadiran[0],
-        pertemuan2: item?.nilai?.ekstrakurikulerPilihan?.kehadiran[1],
-        pertemuan3: item?.nilai?.ekstrakurikulerPilihan?.kehadiran[2],
-        pertemuan4: item?.nilai?.ekstrakurikulerPilihan?.kehadiran[3],
-        pertemuan5: item?.nilai?.ekstrakurikulerPilihan?.kehadiran[4],
-        pertemuan6: item?.nilai?.ekstrakurikulerPilihan?.kehadiran[5],
-        pertemuan7: item?.nilai?.ekstrakurikulerPilihan?.kehadiran[6],
-        pertemuan8: item?.nilai?.ekstrakurikulerPilihan?.kehadiran[7],
-        pertemuan9: item?.nilai?.ekstrakurikulerPilihan?.kehadiran[8],
-        pertemuan10: item?.nilai?.ekstrakurikulerPilihan?.kehadiran[9],
-        pertemuan11: item?.nilai?.ekstrakurikulerPilihan?.kehadiran[10],
-        pertemuan12: item?.nilai?.ekstrakurikulerPilihan?.kehadiran[11],
-        pertemuan13: item?.nilai?.ekstrakurikulerPilihan?.kehadiran[12],
-        pertemuan14: item?.nilai?.ekstrakurikulerPilihan?.kehadiran[13],
+        pertemuan: item?.nilai?.[props?.data?.wajib ? "ekstrakurikulerWajib" : "ekstrakurikulerPilihan"]?.kehadiran[pertemuan],
+        pertemuan1: item?.nilai?.[props?.data?.wajib ? "ekstrakurikulerWajib" : "ekstrakurikulerPilihan"]?.kehadiran[0],
+        pertemuan2: item?.nilai?.[props?.data?.wajib ? "ekstrakurikulerWajib" : "ekstrakurikulerPilihan"]?.kehadiran[1],
+        pertemuan3: item?.nilai?.[props?.data?.wajib ? "ekstrakurikulerWajib" : "ekstrakurikulerPilihan"]?.kehadiran[2],
+        pertemuan4: item?.nilai?.[props?.data?.wajib ? "ekstrakurikulerWajib" : "ekstrakurikulerPilihan"]?.kehadiran[3],
+        pertemuan5: item?.nilai?.[props?.data?.wajib ? "ekstrakurikulerWajib" : "ekstrakurikulerPilihan"]?.kehadiran[4],
+        pertemuan6: item?.nilai?.[props?.data?.wajib ? "ekstrakurikulerWajib" : "ekstrakurikulerPilihan"]?.kehadiran[5],
+        pertemuan7: item?.nilai?.[props?.data?.wajib ? "ekstrakurikulerWajib" : "ekstrakurikulerPilihan"]?.kehadiran[6],
+        pertemuan8: item?.nilai?.[props?.data?.wajib ? "ekstrakurikulerWajib" : "ekstrakurikulerPilihan"]?.kehadiran[7],
+        pertemuan9: item?.nilai?.[props?.data?.wajib ? "ekstrakurikulerWajib" : "ekstrakurikulerPilihan"]?.kehadiran[8],
+        pertemuan10: item?.nilai?.[props?.data?.wajib ? "ekstrakurikulerWajib" : "ekstrakurikulerPilihan"]?.kehadiran[9],
+        pertemuan11: item?.nilai?.[props?.data?.wajib ? "ekstrakurikulerWajib" : "ekstrakurikulerPilihan"]?.kehadiran[10],
+        pertemuan12: item?.nilai?.[props?.data?.wajib ? "ekstrakurikulerWajib" : "ekstrakurikulerPilihan"]?.kehadiran[11],
+        pertemuan13: item?.nilai?.[props?.data?.wajib ? "ekstrakurikulerWajib" : "ekstrakurikulerPilihan"]?.kehadiran[12],
+        pertemuan14: item?.nilai?.[props?.data?.wajib ? "ekstrakurikulerWajib" : "ekstrakurikulerPilihan"]?.kehadiran[13],
     }))
 
     // let absenColumn = []
@@ -335,6 +339,14 @@ export default function AbsenModal(props) {
             key: "kelas",
             ...getColumnSearchProps("kelas"),
         },
+        {
+            title: `Pertemuan ke-${pertemuan + 1}`,
+            dataIndex: "pertemuan",
+            key: "pertemuan",
+            render: (_, record) => (
+                <span className={`${record?.pertemuan ? "text-green-500" : "text-red-500"}`}>{record?.pertemuan ? "H" : "X"}</span>
+            )
+        }
     ]
 
     const rowSelection = {
@@ -369,6 +381,7 @@ export default function AbsenModal(props) {
 
                 setLoading(true)
 
+
                 try {
                     const res = await absenService.absen(payload)
 
@@ -377,6 +390,8 @@ export default function AbsenModal(props) {
                         title: "Sukses",
                         text: "Data berhasil disimpan"
                     })
+                    setPertemuan(0)
+                    formAbsen.setFieldsValue({ pertemuan: 0 })
                     router.push(router.asPath)
                     setOpen(false)
                     props.onCancel()
@@ -432,7 +447,7 @@ export default function AbsenModal(props) {
                                 <Select placeholder="Pertemuan" options={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map(item => ({
                                     label: `Pertemuan - ${item + 1}`
                                     , value: item
-                                }))} />
+                                }))} defaultValue={pertemuan} value={pertemuan} onChange={e => setPertemuan(e)} />
                             </Form.Item>
                         </Col>
                     </Form>
