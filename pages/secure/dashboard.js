@@ -9,10 +9,11 @@ import http from '@/plugin/https'
 import kelasService from "@/services/kelas.service";
 import matpelService from "@/services/matpel.service";
 import galleryService from "@/services/gallery.service";
+import prestasiService from "@/services/prestasi.service";
 
 Dashboard.layout = "L1";
 
-export default function Dashboard({ gallery, matpel, pengajar, siswa, ekstrakurikuler, pengumuman, kelas }) {
+export default function Dashboard({ gallery, matpel, pengajar, siswa, ekstrakurikuler, pengumuman, kelas, prestasi }) {
     const [pending, setPending] = useState(ekstrakurikuler?.data?.filter((item) => item?.approve === false));
     const router = useRouter();
     const { data: session } = useSession()
@@ -87,7 +88,7 @@ export default function Dashboard({ gallery, matpel, pengajar, siswa, ekstrakuri
         },
         {
             title: "Prestasi",
-            text: matpel?.length,
+            text: prestasi?.data?.length,
             icon: (
                 <div className="rounded bg-orange-200 p-1">
                     <FireIcon className="h-5 w-5 text-orange-500" />
@@ -160,6 +161,7 @@ export async function getServerSideProps(ctx) {
     const { data: kelas } = await kelasService.get()
     const { data: matpel } = await matpelService.get()
     const { data: gallery } = await galleryService.get()
+    const { data: prestasi } = await http.get('/prestasi')
 
     if (!session) {
         return {
@@ -178,7 +180,8 @@ export async function getServerSideProps(ctx) {
             pengumuman: pengumuman,
             kelas: kelas,
             matpel: matpel,
-            gallery
+            gallery,
+            prestasi
         },
     };
 }
