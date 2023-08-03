@@ -161,14 +161,14 @@ export async function getServerSideProps(ctx) {
     const { data: matpel } = await matpelService.get()
     const { data: gallery } = await galleryService.get()
 
-    // if (!session) {
-    //     return {
-    //         redirect: {
-    //             destination: "/login",
-    //         },
-    //         props: {},
-    //     };
-    // }
+    if (!session) {
+        return {
+            redirect: {
+                destination: "/auth/login",
+            },
+            props: {},
+        };
+    }
 
     return {
         props: {

@@ -12,7 +12,7 @@ export default function Sidebar() {
     const router = useRouter();
     const { data } = useSession();
 
-    const selectedKey = (router.pathname === "/" && "dashboard") || (router.pathname.includes("/pengajar") && "pengajar") || (router.pathname.includes("/ekstrakurikuler") && "ekstrakurikuler") || (router.pathname.includes("/siswa") && "siswa") || (router.pathname.includes("/absensi") && "absensi") || (router.pathname.includes("/arsib") && "arsib") || (router.pathname.includes("/pengumuman") && "pengumuman") || (router.pathname.includes("/ekstraku") && "ekstraku");
+    const selectedKey = (router.pathname === "/secure/dashboard" && "dashboard") || (router.pathname.includes("/pengajar") && "pengajar") || (router.pathname.includes("/ekstrakurikuler") && "ekstrakurikuler") || (router.pathname.includes("/siswa") && "siswa") || (router.pathname.includes("/absensi") && "absensi") || (router.pathname.includes("/prestasi") && "prestasi") || (router.pathname.includes("/pengumuman") && "pengumuman") || (router.pathname.includes("/gallery") && "gallery") || (router.pathname.includes("/kelas") && "kelas") || (router.pathname.includes("/matpel") && "matpel");
 
     return (
         <Sider
@@ -39,10 +39,11 @@ export default function Sidebar() {
                 <span className="text-white">Sekolah Mutiara</span>
             </Link>
             <Menu
+                activeKey="dashboard"
                 theme="light"
                 items={items}
                 selectedKeys={[selectedKey]}
-                onSelect={(e) => router.push(e.key === "dashboard" ? "/" : "/" + e.key)}
+                onSelect={(e) => router.push(e.key === "dashboard" ? "/secure/dashboard" : "/secure/" + e.key)}
             />
         </Sider>
     );
