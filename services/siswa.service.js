@@ -35,6 +35,12 @@ const siswaService = {
         const { data } = await http.get(`siswa/${id}`)
 
         return data
+    },
+
+    async get() {
+        const { data } = await http.get('/siswa')
+
+        return data
     }
 };
 

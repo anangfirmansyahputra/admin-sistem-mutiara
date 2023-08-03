@@ -1,4 +1,5 @@
 import DetailSiswaModal from '@/components/modals/DetailSiswaModal';
+import JoinModal from '@/components/modals/JoinModal';
 import http from '@/plugin/https';
 import siswaService from "@/services/siswa.service";
 import { DownOutlined, PlusOutlined, SaveOutlined, SearchOutlined } from "@ant-design/icons";
@@ -326,6 +327,16 @@ export default function Pengajar({ siswa, kelas }) {
                 label: (
                     <a onClick={e => {
                         e.preventDefault()
+                    }}>
+                        Ekstrakurikuler
+                    </a>
+                ),
+                key: '4',
+            },
+            {
+                label: (
+                    <a onClick={e => {
+                        e.preventDefault()
                         handleDelete(id)
                     }}>
                         Delete
@@ -345,14 +356,14 @@ export default function Pengajar({ siswa, kelas }) {
             key: "nama",
             width: "300px",
             ...getColumnSearchProps("nama"),
-            render: (_, record) => (
-                <Link
-                    href={{
-                        pathname: `siswa/${record?.nis}`,
-                    }}>
-                    {record?.nama}
-                </Link>
-            ),
+            // render: (_, record) => (
+            //     <Link
+            //         href={{
+            //             pathname: `siswa/${record?.nis}`,
+            //         }}>
+            //         {record?.nama}
+            //     </Link>
+            // ),
         },
         {
             title: "NIS",
@@ -497,7 +508,7 @@ export default function Pengajar({ siswa, kelas }) {
                     <Breadcrumb
                         items={[
                             {
-                                title: <Link href="/">Dashboard</Link>,
+                                title: <Link href="/secure/dashboard">Dashboard</Link>,
                             },
                             {
                                 title: "Siswa",
@@ -613,6 +624,7 @@ export default function Pengajar({ siswa, kelas }) {
                     </Form>
                 </Card>
             </Modal>
+            <JoinModal />
             <DetailSiswaModal open={detailModal} data={detailData} onCancel={handleCloseDetailModal} />
         </>
     );

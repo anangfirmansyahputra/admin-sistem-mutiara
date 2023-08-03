@@ -180,6 +180,7 @@ export default function Gallery({ gallery }) {
             ...getColumnSearchProps("linkGallery"),
             render: (_, record) => (
                 <Link
+                    rel="noopener noreferrer"
                     target="_blank"
                     href={{
                         pathname: record?.linkGallery,

@@ -67,66 +67,31 @@ export default function Dashboard({ pengajar, siswa, ekstrakurikuler, pengumuman
             <Head>
                 <title>Dashboard | Sistem Informasi Sekolah Mutiara</title>
             </Head>
-            <div>
-                <p className="text-xl font-semibold">Dashboard</p>
-                <div className="grid grid-cols-4 gap-5">
-                    {items?.map((item) => (
-                        <CardDashboard
-                            key={item?.title}
-                            text={item?.text}
-                            title={item?.title}
-                            icon={item?.icon}
-                            link={item?.link}
-                            linkText={item?.linkText}
-                        />
-                    ))}
-                </div>
-                {pending?.length > 0 && (
-                    <div className="mt-5">
-                        <Alert
-                            message="Pemberitahuan"
-                            showIcon
-                            description={`Ada ${pending?.length} ekstrakurikuler yang belum disetujui`}
-                            type="warning"
-                            action={
-                                <Button
-                                    onClick={() => router.push("/ekstrakurikuler/approve")}
-                                    size="small"
-                                    danger>
-                                    Detail
-                                </Button>
-                            }
-                        />
-                    </div>
-                )}
-            </div>
         </>
-    );
+    )
 }
 
 export async function getServerSideProps(ctx) {
-    const session = await getSession(ctx)
-    const { data } = await http.get('/pengajar/ekstrakurikuler')
-    const { data: siswa } = await http.get('/siswa')
-    const { data: pengajar } = await http.get('/admin/pengajar')
-    const { data: pengumuman } = await http.get('/admin/pengumuman')
-
-    if (!session) {
-        return {
-            redirect: {
-                destination: "/login",
-            },
-            props: {},
-        };
-    }
+    // const session = await getSession(ctx)
+    // const { data } = await http.get('/pengajar/ekstrakurikuler')
+    // const { data: siswa } = await http.get('/siswa')
+    // const { data: pengajar } = await http.get('/admin/pengajar')
+    // const { data: pengumuman } = await http.get('/admin/pengumuman')
 
     return {
-        props: {
-            ekstrakurikuler: data,
-            siswa: siswa,
-            pengajar: pengajar,
-            pengumuman: pengumuman,
+        redirect: {
+            destination: "/secure/dashboard",
         },
+        props: {},
     };
+
+    // return {
+    //     props: {
+    //         ekstrakurikuler: data,
+    //         siswa: siswa,
+    //         pengajar: pengajar,
+    //         pengumuman: pengumuman,
+    //     },
+    // };
 }
 

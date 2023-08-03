@@ -29,6 +29,12 @@ const ekstrakurikulerService = {
         const { data } = await http.delete(`/ekstrakurikuler/${id}`)
 
         return data
+    },
+
+    async get() {
+        const { data } = await http.get(`/pengajar/ekstrakurikuler`)
+
+        return data
     }
 };
 

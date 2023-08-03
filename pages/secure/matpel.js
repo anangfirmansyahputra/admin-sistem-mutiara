@@ -238,35 +238,26 @@ export default function MatpelPage({ matpel }) {
             <Head>
                 <title>Mata Pelajaran | Sistem Informasi Mutiara</title>
             </Head>
-            <Content style={{ margin: "0 16px" }}>
-                <div className="flex justify-between items-center">
-                    <div>
-                        <Typography.Title
-                            level={3}
-                            style={{ marginBottom: "0" }}>
-                            Mata Pelajaran
-                        </Typography.Title>
-                        <Breadcrumb style={{ margin: "0 0 16px" }} items={[
-                            {
-                                title: <Link href={{
-                                    pathname: "/dashboard"
-                                }}>Dashboard</Link>
-                            },
-                            {
-                                title: "Mata Pelajaran"
-                            }
-                        ]} />
-                    </div>
+            <Content>
+                <Typography.Title level={2} style={{ margin: 0, padding: 0 }}>Mata Pelajaran</Typography.Title>
+                <div className="mb-5 flex items-center justify-between">
+                    <Breadcrumb items={[
+                        {
+                            title: <Link href={{
+                                pathname: "/secure/dashboard"
+                            }}>Dashboard</Link>
+                        },
+                        {
+                            title: "Mata Pelajaran"
+                        }
+                    ]} />
                     <Button onClick={() => setModalOpen(true)} type="primary" icon={<PlusOutlined />}>Mata Pelajaran</Button>
                 </div>
-                <Card>
+                <Card title="Data Mata Pelajaran">
                     <Table
                         sticky
                         bordered
-                        size="large"
-                        style={{
-                            height: "100",
-                        }}
+                        size="small"
                         columns={columns}
                         dataSource={data}
                     />
@@ -278,10 +269,10 @@ export default function MatpelPage({ matpel }) {
                     open={modalOpen}
                     onCancel={() => {
                         setModalOpen(false)
-                        // setEdit({
-                        //     id: null,
-                        //     isEdit: false
-                        // })
+                        setEdit({
+                            id: null,
+                            isEdit: false
+                        })
                         form.resetFields()
                     }}
                     footer={[
@@ -301,7 +292,7 @@ export default function MatpelPage({ matpel }) {
                         </Form.Item>
                     </Form>
                 </Modal>
-            </Content>
+            </Content >
         </>
     );
 }

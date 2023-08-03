@@ -12,6 +12,18 @@ const prestasiService = {
 
         return data;
     },
+
+    async update(id, payload) {
+        const { data } = await http.put(`/prestasi/${id}`, payload);
+
+        return data;
+    },
+
+    async find(id) {
+        const { data } = await http.get(`/prestasi/${id}`)
+
+        return data
+    }
 };
 
 export default prestasiService;

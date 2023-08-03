@@ -28,7 +28,13 @@ const kelasService = {
         const { data } = await http.delete(`/kelas/delete/${id}`)
 
         return data
-    }
+    },
+
+    async get() {
+        const { data } = await http.get(`/kelas`)
+
+        return data
+    },
 };
 
 export default kelasService;

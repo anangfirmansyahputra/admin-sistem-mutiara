@@ -1,57 +1,46 @@
-import useDeletePengajarContext from "@/context/useDeletePengajarContext";
-import http from '@/plugin/https';
-import matpelService from "@/services/matpel.service";
-import pengajarService from "@/services/pengajar.service";
-import { DeleteOutlined, PlusOutlined, SaveOutlined, SearchOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Card, Col, DatePicker, Form, Input, Layout, Modal, Popconfirm, Row, Select, Space, Table, Typography, message } from "antd";
+import galleryService from "@/services/gallery.service";
+import { DeleteOutlined, DownOutlined, PlusCircleFilled, PlusCircleOutlined, PlusOutlined, SaveOutlined, SearchOutlined } from "@ant-design/icons";
+import { Breadcrumb, Button, Card, Col, DatePicker, Dropdown, Form, Input, Modal, Popconfirm, Row, Select, Space, Table, Typography, message } from "antd";
 import dayjs from "dayjs";
 import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
+import http from '@/plugin/https'
+import ekstrakurikulerService from "@/services/ekstrakurikuler.service";
 import Swal from "sweetalert2";
 
-Pengajar.layout = "L1";
-const { Content } = Layout
+Gallery.layout = "L1";
 
-export default function Pengajar({ pengajar, matpel }) {
-    const [form] = Form.useForm()
-    const { push, asPath } = useRouter();
-    const { data: session } = useSession();
-    const router = useRouter()
-
-
+export default function Gallery({ gallery, ekstrakurikuler }) {
     // State
     const [searchText, setSearchText] = useState("");
     const [searchedColumn, setSearchedColumn] = useState("");
     const [loadingFirst, setLoadingFirst] = useState(true);
-    // const { handleDelete, loading } = useDeletePengajarContext();
-    const searchInput = useRef(null);
+    const [selectedRow, setSelectedRow] = useState([]);
     const [open, setOpen] = useState(false)
-    const [isEdit, setIsEdit] = useState(false)
     const [id, setId] = useState(null)
+    const [isEdit, setIsEdit] = useState(false)
 
+    const searchInput = useRef(null);
+    const [form] = Form.useForm()
     const data = [];
-
+    const { push, asPath } = useRouter();
+    const { data: session } = useSession();
+    const router = useRouter()
     const token = session?.user?.user?.accessToken;
-    pengajar?.data.map((item) =>
+
+    gallery?.map((item) =>
         data.push({
             key: item._id,
-            nama: item?.nama,
-            nik: item?.nik,
-            mengajar: item?.mengajar?.name,
-            ekstrakurikuler: item?.ekstrakurikuler,
-            alamat: item?.alamat,
-            tgl: item?.tgl,
-            noTelp: item?.noTelp,
+            description: item?.description ?? "-",
+            linkGallery: item?.linkGallery ?? "-",
+            ekstrakurikuler: item?.ekstrakurikuler?.name ?? "-",
+            tglUpload: dayjs(item?.tglUpload).format("DD/MM/YY") ?? "-",
         })
     );
-
-    useEffect(() => {
-        setLoadingFirst(false);
-    }, []);
 
     const handleCancel = () => {
         setOpen(false)
@@ -161,97 +150,145 @@ export default function Pengajar({ pengajar, matpel }) {
     const confirm = async (record) => {
         try {
             setLoadingFirst(true);
-            const deleteRes = await pengajarService.delete(selectedRow?.map((item) => item?.nik));
-            message.success(deleteRes?.message);
+            const res = await galleryService.delete({ ids: selectedRow });
+            message.success(res?.message);
             push(asPath);
         } catch (err) {
-            message.error(err);
+            message.error(err?.message);
         } finally {
             setLoadingFirst(false);
         }
     };
 
+    const items = (id, link) => {
+        return [
+            {
+                label: (
+                    <a onClick={e => {
+                        e.preventDefault()
+                        handleEdit(id)
+                    }}>
+                        Edit
+                    </a>
+                ),
+                key: '1',
+            },
+            {
+                label: (
+                    <a rel="" target="_blank" href={link}>
+                        Lihat
+                    </a>
+                ),
+                key: '3',
+            },
+            {
+                label: (
+                    <a onClick={e => {
+                        e.preventDefault()
+                        handleDelete(id)
+                    }}>
+                        Delete
+                    </a>
+                ),
+                key: '2',
+                danger: true
+            },
+        ];
+    }
+
+    const handleEdit = async (id) => {
+        try {
+            setOpen(true)
+            setId(id)
+            setIsEdit(true)
+
+
+            const { data } = await galleryService.find(id)
+            const findData = {
+                ekstrakurikuler: data.ekstrakurikuler._id,
+                linkGallery: data.linkGallery,
+                description: data.description,
+            }
+
+            form.setFieldsValue(findData);
+
+        } catch (err) {
+            console.log(err);
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Server sedang error, silahkan coba kembali"
+            })
+        }
+    }
+
+
     const columns = [
         {
-            title: "Nama",
-            dataIndex: "nama",
-            key: "nama",
-            width: "300px",
-            ...getColumnSearchProps("nama"),
-            // fixed: "left",
+            title: "Deskripsi",
+            dataIndex: "description",
+            key: "description",
+            ...getColumnSearchProps("description"),
             // render: (_, record) => (
             //     <Link
             //         href={{
-            //             pathname: `/pengajar/${record?.nik}`,
+            //             pathname: `/gallery/${record?.key}`,
             //         }}>
-            //         {record?.nama}
+            //         {record?.description}
             //     </Link>
             // ),
-        },
-        {
-            title: "NIK",
-            dataIndex: "nik",
-            key: "nik",
-            width: "200px",
-            ...getColumnSearchProps("nik"),
-        },
-        {
-            title: "Mengajar",
-            dataIndex: "mengajar",
-            key: "mengajar",
-            ...getColumnSearchProps("mengajar"),
-            sortDirections: ["descend", "ascend"],
-            width: "200px",
         },
         {
             title: "Ekstrakurikuler",
             dataIndex: "ekstrakurikuler",
             key: "ekstrakurikuler",
             ...getColumnSearchProps("ekstrakurikuler"),
-            width: "200px",
-            render: (_, record) => <span>{record?.ekstrakurikuler?.length > 0 ? record?.ekstrakurikuler?.map((item) => item?.name).join(", ") : "-"}</span>,
         },
         {
-            title: "Alamat",
-            dataIndex: "alamat",
-            key: "alamat",
-            ...getColumnSearchProps("alamat"),
-            sortDirections: ["descend", "ascend"],
-            width: "500px",
+            title: "Tanggal",
+            dataIndex: "tglUpload",
+            key: "tglUpload",
+            ...getColumnSearchProps("tglUpload"),
         },
-        {
-            title: "Tanggal Lahir",
-            dataIndex: "tgl",
-            key: "tgl",
-            ...getColumnSearchProps("tgl"),
-            sortDirections: ["descend", "ascend"],
-            width: "200px",
-            render: (_, record) => <span>{dayjs(record?.tgl).format("DD/MM/YYYY")}</span>,
-        },
-        {
-            title: "No Telp",
-            dataIndex: "noTelp",
-            key: "noTelp",
-            ...getColumnSearchProps("noTelp"),
-            sortDirections: ["descend", "ascend"],
-            width: "200px",
-        },
+        // {
+        //     title: "Link",
+        //     dataIndex: "linkGallery",
+        //     key: "linkGallery",
+        //     ...getColumnSearchProps("linkGallery"),
+        //     render: (_, record) => (
+        //         <Link
+        //             target="_blank"
+        //             href={{
+        //                 pathname: record?.linkGallery,
+        //             }}>
+        //             Lihat
+        //         </Link>
+        //     ),
+        // },
         {
             title: "Aksi",
             fixed: "right",
-            width: "150px",
+            width: "100px",
             render: (_, record) => (
-                <>
-                    <Button type="link" onClick={() => handleEdit(record.key)}>Edit</Button>
-                    <Button type="link" danger onClick={() => handleDelete(record.key)}>Hapus</Button>
-                </>
+                <Dropdown
+                    menu={{
+                        items: items(record.key, record.linkGallery)
+                    }}
+                >
+                    <a onClick={(e) => e.preventDefault()}>
+                        <Space>
+                            Aksi
+                            <DownOutlined />
+                        </Space>
+                    </a>
+                </Dropdown>
             )
         }
     ];
 
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
-            setSelectedRow(selectedRows);
+            setSelectedRow(selectedRowKeys);
         },
         getCheckboxProps: (record) => ({
             disabled: record.name === "Disabled User",
@@ -259,9 +296,7 @@ export default function Pengajar({ pengajar, matpel }) {
         }),
     };
 
-    const [selectedRow, setSelectedRow] = useState([]);
-
-    const handleSubmit = (values) => {
+    const handleSubmit = async (values) => {
         Swal.fire({
             icon: "question",
             title: "Apa anda yakin?",
@@ -273,70 +308,15 @@ export default function Pengajar({ pengajar, matpel }) {
             if (result.isConfirmed) {
                 try {
                     if (isEdit) {
-                        const res = await pengajarService.update(id, values)
+                        const res = await galleryService.update(values, id)
                     } else {
-                        const res = await pengajarService.create(values)
+
+                        const res = await galleryService.create(values)
                     }
                     Swal.fire({
                         icon: 'success',
                         title: "Sukses",
                         text: isEdit ? "Data berhasil diupdate" : "Data berhasil disimpan"
-                    })
-                    router.push(router.asPath)
-                    setOpen(false)
-                    form.resetFields()
-                    setId(null)
-                    setIsEdit(false)
-                } catch (err) {
-                    console.log(err);
-                    const messageErr = JSON?.parse(err?.request?.response)?.message
-                    Swal.fire({
-                        icon: 'error',
-                        title: "Gagal",
-                        text: messageErr ?? "Data gagal disimpan, coba ganti data dan coba kembali!"
-                        // text: "Data gagal disimpan, coba ganti data dan coba kembali!"
-                    })
-                }
-            } else if (result.isDenied) {
-            }
-        })
-    }
-
-    const handleEdit = async (id) => {
-        try {
-            setIsEdit(true)
-            setOpen(true)
-            setId(id)
-            const { data } = await pengajarService.find(id)
-            const formattedDate = dayjs(data.tgl).format("YYYY-MM-DD");
-            form.setFieldsValue({ ...data, tgl: dayjs(formattedDate) });
-
-        } catch (err) {
-            console.log(err);
-            Swal.fire({
-                icon: 'error',
-                title: "Gagal",
-                text: "Server sedang mengalami gangguan, silahkan coba kembali"
-            })
-        }
-    }
-
-    const handleDelete = async (id) => {
-        Swal.fire({
-            icon: "question",
-            title: "Apa anda yakin?",
-            text: "Data akan dihapus permanen",
-            showDenyButton: true,
-            confirmButtonText: 'Yakin',
-            denyButtonText: `Tidak`,
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                try {
-                    const res = await pengajarService.deleteOne(id)
-                    Swal.fire({
-                        icon: 'success',
-                        title: "Sukses",
-                        text: "Data berhasil dihapus"
                     })
                     router.push(router.asPath)
                     setOpen(false)
@@ -354,140 +334,155 @@ export default function Pengajar({ pengajar, matpel }) {
                 }
             } else if (result.isDenied) {
             }
+        })
+    }
+
+    const handleDelete = async (id) => {
+        Swal.fire({
+            icon: "question",
+            title: "Apa anda yakin?",
+            text: "Data akan dihapus permanen",
+            showDenyButton: true,
+            confirmButtonText: 'Yakin',
+            denyButtonText: `Tidak`,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const res = await galleryService.deleteOne(id)
+                    Swal.fire({
+                        icon: 'success',
+                        title: "Sukses",
+                        text: "Data berhasil dihapus"
+                    })
+                    router.push(router.asPath)
+                    setOpen(false)
+                    form.resetFields()
+                    setId(null)
+                    setIsEdit(false)
+                } catch (err) {
+                    const messageErr = JSON.parse(err?.request?.response)?.message
+                    Swal.fire({
+                        icon: 'error',
+                        title: "Gagal",
+                        text: messageErr ?? "Data gagal dihapus, coba kembali!"
+                    })
+                }
+            } else if (result.isDenied) {
+            }
         }
         )
     }
 
-
-
-
     return (
         <>
             <Head>
-                <title>Pengajar | Sistem Informasi Mutiara</title>
+                <title>Gallery | Sistem Informasi Mutiara</title>
             </Head>
-            <Content>
-                <Typography.Title level={2} style={{ margin: 0, padding: 0 }}>Pengajar</Typography.Title>
+            <>
+                <Typography.Title level={2} style={{ margin: 0, padding: 0 }}>Gallery</Typography.Title>
                 <div className="mb-5 flex items-center justify-between">
-                    <Breadcrumb items={[
-                        {
-                            title: <Link href={{
-                                pathname: "/secure/dashboard"
-                            }}>Dashboard</Link>
-                        },
-                        {
-                            title: "Pengajar"
-                        }
-                    ]} />
-
+                    <Breadcrumb
+                        items={[
+                            {
+                                title: <Link href="/secure/dashboard">Dashboard</Link>,
+                            },
+                            {
+                                title: "Gallery",
+                            },
+                        ]}
+                    />
                     <Button
                         onClick={() => setOpen(true)}
                         type="primary"
                         icon={<PlusOutlined />}>
-                        Pengajar
+                        Tambah
                     </Button>
                 </div>
-                <Card title="Data Pengajar">
+                <Card title="Data Gallery">
                     <Table
-                        loading={loadingFirst}
                         sticky
                         bordered
                         size="small"
-                        style={{
-                            height: "100",
-                        }}
                         columns={columns}
                         dataSource={data}
-                        scroll={{
-                            x: 1200,
-                        }}
                     />
                 </Card>
-                <Modal open={open} width={1200} footer={<Button icon={<SaveOutlined />} type="primary" onClick={() => form.submit()}>Submit</Button>} onCancel={handleCancel} title="Form Pengajar" >
+                <Modal open={open} width={1200} onCancel={handleCancel} title="Form Gallery" footer={<Button type="primary" icon={<SaveOutlined />} onClick={() => form.submit()}>Submit</Button>}>
                     <Card className="m-[20px]">
-                        <Form labelAlign="left" onFinish={handleSubmit} form={form} labelCol={{ span: 6 }} colon={false}>
+                        <Form form={form} labelCol={{ span: 6 }} onFinish={handleSubmit} labelAlign="left" colon={false}>
                             <Row gutter={16}>
                                 <Col span={12}>
-                                    <Form.Item label="Nama" name="nama" required rules={[
-                                        {
-                                            message: "Mohon isi nama",
-                                            required: true
-                                        }
+                                    <Form.Item label="Ekstrakurikuler" required name="ekstrakurikuler" rules={[
+                                        { message: "Mohon pilih ekstrakurikuler", required: true }
                                     ]}>
-                                        <Input placeholder="Nama" />
+                                        <Select placeholder="Ekstrakurikuler" options={[
+                                            ...ekstrakurikuler.map(item => ({
+                                                value: item._id,
+                                                label: item?.name
+                                            }))
+                                        ]} />
                                     </Form.Item>
-                                    <Form.Item label="Password" name="password" required rules={[
+                                    {/* <Form.Item label="Ditujukan" name="for" rules={[
                                         {
-                                            message: "Mohon isi password",
+                                            message: "Mohon pilih ditujukan",
                                             required: true
                                         }
                                     ]}>
-                                        <Input.Password placeholder="Password" />
-                                    </Form.Item>
-                                    <Form.Item label="Alamat" name="alamat" required rules={[
+                                        <Select placeholder="Ditujukan" mode="multiple" options={[
+                                            {
+                                                value: "siswa",
+                                                label: "Siswa"
+                                            },
+                                            {
+                                                value: "pengajar",
+                                                label: "Pengajar"
+                                            }
+                                        ]} />
+                                    </Form.Item> */}
+                                    <Form.Item required name="description" label="Deskripsi" rules={[
                                         {
-                                            message: "Mohon isi alamat",
+                                            message: "Mohon isi deskripsi",
                                             required: true
                                         }
                                     ]}>
-                                        <Input placeholder="Alamat" />
-                                    </Form.Item>
-                                    <Form.Item label="Nomor Telp" name="noTelp" required rules={[
-                                        {
-                                            message: "Mohon isi nomor telepon",
-                                            required: true
-                                        }
-                                    ]}>
-                                        <Input placeholder="Nomor Telepon" />
+                                        <Input.TextArea placeholder="Deskripsi" />
                                     </Form.Item>
                                 </Col>
                                 <Col span={12}>
-                                    <Form.Item label="NIK" name="nik" required rules={[
+                                    {/* <Form.Item required name="endDate" label="Tanggal Berlaku" rules={[
                                         {
-                                            message: "Mohon isi NIK",
-                                            required: true
-                                        }
-                                    ]}>
-                                        <Input max={16} placeholder="NIK" />
-                                    </Form.Item>
-                                    <Form.Item label="Mengajar" name="mengajar" required rules={[
-                                        {
-                                            message: "Mohon pilih mengajar",
-                                            required: true
-                                        }
-                                    ]}>
-                                        <Select placeholder="Mengajar" options={matpel?.map(item => ({
-                                            value: item?._id,
-                                            label: item?.name
-                                        }))} />
-                                    </Form.Item>
-                                    <Form.Item label="Tanggal Lahir" name="tgl" required rules={[
-                                        {
-                                            message: "Mohon isi tanggal lahir",
+                                            message: "Mohon isi tanggal berlaku",
                                             required: true
                                         }
                                     ]}>
                                         <DatePicker style={{ width: "100%" }} />
+                                    </Form.Item> */}
+                                    <Form.Item required name="linkGallery" label="Link" rules={[
+                                        {
+                                            message: "Mohon isi link",
+                                            required: true
+                                        }
+                                    ]}>
+                                        <Input placeholder="Link" />
                                     </Form.Item>
                                 </Col>
                             </Row>
                         </Form>
                     </Card>
                 </Modal>
-            </Content>
+            </>
         </>
     );
 }
 
 export async function getServerSideProps(ctx) {
-    const { data } = await http.get('/admin/pengajar')
-    const { data: matpel } = await matpelService.get()
+    const { data } = await galleryService.get()
+    const { data: ekstrakurikuler } = await ekstrakurikulerService.get()
     const session = await getSession(ctx)
-
     if (!session) {
         return {
             redirect: {
-                destination: "/auth/login",
+                destination: "/login",
             },
             props: {},
         };
@@ -495,8 +490,8 @@ export async function getServerSideProps(ctx) {
 
     return {
         props: {
-            pengajar: data,
-            matpel: matpel
+            gallery: data,
+            ekstrakurikuler: ekstrakurikuler
         },
     };
 }

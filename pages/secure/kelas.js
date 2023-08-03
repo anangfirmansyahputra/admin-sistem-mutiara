@@ -278,7 +278,7 @@ export default function Kelas({ kelas }) {
                     <Breadcrumb
                         items={[
                             {
-                                title: <Link href="/">Dashboard</Link>,
+                                title: <Link href="/secure/dashboard">Dashboard</Link>,
                             },
                             {
                                 title: "Kelas",
