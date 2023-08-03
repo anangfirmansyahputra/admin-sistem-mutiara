@@ -5,7 +5,6 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Skeleton, Spin, Typography } from "antd";
 
 import Head from "next/head";
-import Image from "next/image";
 
 const { Title, Text } = Typography;
 
@@ -90,6 +89,7 @@ export default function Login() {
                     </Skeleton>
                 </div>
             </div> */}
+            {contextHolder}
             <div className="w-screen flex justify-center items-center bg-[#f3f3f3] h-screen">
                 <div className="w-[900px] flex flex-row bg-white rounded overflow-hidden">
                     <img src="/assets/img.jpg" className="w-[450px] z-[999]" />

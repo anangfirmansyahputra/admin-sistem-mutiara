@@ -9,22 +9,25 @@ export default function HeaderComp() {
     const { data } = useSession();
 
     const items = [
-        {
-            key: "1",
-            danger: false,
-            label: (
-                <Link
-                    href={{
-                        pathname: "/profile",
-                    }}>
-                    Profile
-                </Link>
-            ),
-        },
+        // {
+        //     key: "1",
+        //     danger: false,
+        //     label: (
+        //         <Link
+        //             href={{
+        //                 pathname: "/profile",
+        //             }}>
+        //             Profile
+        //         </Link>
+        //     ),
+        // },
         {
             key: "2",
             danger: true,
-            label: <div onClick={() => signOut()}>Logout</div>,
+            label: <a onClick={(e) => {
+                e.preventDefault()
+                signOut({ callbackUrl: `/auth/login` })
+            }}>Logout</a>,
         },
     ];
 
