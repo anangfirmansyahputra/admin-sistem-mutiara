@@ -494,7 +494,7 @@ export default function Ekstrakurikuler({ ekstrakurikuler, pengajar }) {
                         type="warning"
                         action={
                             <Button
-                                onClick={() => router.push("/ekstrakurikuler/approve")}
+                                onClick={() => router.push("/secure/ekstrakurikuler/approve")}
                                 size="small"
                                 danger>
                                 Detail

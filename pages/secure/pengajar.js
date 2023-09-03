@@ -403,7 +403,9 @@ export default function Pengajar({ pengajar, matpel }) {
                         }}
                     />
                 </Card>
-                <Modal open={open} width={1200} footer={<Button icon={<SaveOutlined />} type="primary" onClick={() => form.submit()}>Submit</Button>} onCancel={handleCancel} title="Form Pengajar" >
+                <Modal open={open} width={1200} style={{
+                    top: 10
+                }} footer={<Button icon={<SaveOutlined />} type="primary" onClick={() => form.submit()}>Submit</Button>} onCancel={handleCancel} title="Form Pengajar" >
                     <Card className="m-[20px]">
                         <Form labelAlign="left" onFinish={handleSubmit} form={form} labelCol={{ span: 6 }} colon={false}>
                             <Row gutter={16}>

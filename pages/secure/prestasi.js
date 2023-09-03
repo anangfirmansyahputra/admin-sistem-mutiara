@@ -415,7 +415,7 @@ export async function getServerSideProps(ctx) {
             prestasi: prestasi,
             siswa: siswa.sort((a, b) => {
                 // Mengurutkan berdasarkan kelas.kelas
-                const compareKelas = a.kelas.kelas.localeCompare(b.kelas.kelas);
+                const compareKelas = a?.kelas?.kelas?.localeCompare(b?.kelas?.kelas);
 
                 // Jika kelas.kelas sama, maka urutkan berdasarkan kelas.name (abjad)
                 if (compareKelas === 0) {

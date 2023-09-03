@@ -98,7 +98,7 @@ export default function Dashboard({ pengajar, siswa, ekstrakurikuler, pengumuman
                         type="warning"
                         action={
                             <Button
-                                onClick={() => router.push("/ekstrakurikuler/approve")}
+                                onClick={() => router.push("/secure/ekstrakurikuler/approve")}
                                 size="small"
                                 danger>
                                 Detail
