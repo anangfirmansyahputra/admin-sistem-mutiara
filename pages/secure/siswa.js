@@ -46,7 +46,7 @@ export default function Pengajar({ siswa, kelas }) {
             alamat: item?.alamat,
             tgl: dayjs(item?.tgl).format("DD/MM/YY"),
             nilai: item?.nilai,
-            kelas: `${item?.kelas?.kelas ?? ""} ${item?.kelas?.name ?? "-"}`,
+            kelas: `${item?.kelas?.kelas ?? ""} ${item?.kelas?.name ?? "Kelas sudah dihapus"}`,
         })
     );
 
@@ -323,16 +323,16 @@ export default function Pengajar({ siswa, kelas }) {
                 ),
                 key: '2',
             },
-            {
-                label: (
-                    <a onClick={e => {
-                        e.preventDefault()
-                    }}>
-                        Ekstrakurikuler
-                    </a>
-                ),
-                key: '4',
-            },
+            // {
+            //     label: (
+            //         <a onClick={e => {
+            //             e.preventDefault()
+            //         }}>
+            //             Ekstrakurikuler
+            //         </a>
+            //     ),
+            //     key: '4',
+            // },
             {
                 label: (
                     <a onClick={e => {
